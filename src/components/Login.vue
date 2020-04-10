@@ -42,13 +42,18 @@
           })
           .then(successResponse => {
             if (successResponse.data.code === 200) {
-              this.$router.replace({path: '/index'})
+              this.$store.commit('login',this.loginForm)
+              var path = this.$route.query.redirect
+              this.$router.replace({path: path === '/' || path === undefined ? '/index' : path})
             }
           })
           .catch(failResponse => {
+
           })
       },
-      signin(){}
+      signin(){
+        this.$router.replace('/signin');
+      }
 
     }
   }
