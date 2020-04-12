@@ -1,42 +1,41 @@
 <template>
-  <el-menu
-    :default-active="'/index'"
-    router
-    mode="horizontal"
-    background-color="white"
-    text-color="#222"
-    active-text-color="red"
-    style="min-width: 1300px">
-    <el-menu-item v-for="(item,i) in navList" :key="i" :index="item.name">
-      {{ item.navItem }}
-    </el-menu-item>
-    <a href="#nowhere" style="color: #222;float: right;padding: 20px;">更多功能</a>
-    <i class="el-icon-menu" style="float:right;font-size: 45px;color: #222;padding-top: 8px"></i>
-    <span style="position: absolute;padding-top: 20px;right: 43%;font-size: 20px;font-weight: bold">社区疫情管理</span>
-  </el-menu>
+  <div class="navMenu">
+
+    <template v-for="navMenu in navMenus">
+      <!-- 最后一级菜单 -->
+      <el-menu-item v-if="!navMenu.childs&&navMenu.entity"
+                    :key="navMenu.entity.id" :data="navMenu" :index="navMenu.entity.name"
+      >
+        <i :class="navMenu.entity.icon"></i>
+        <span slot="title">{{navMenu.entity.alias}}</span>
+      </el-menu-item>
+
+      <!-- 此菜单下还有子菜单 -->
+      <el-submenu v-if="navMenu.childs&&navMenu.entity"
+                  :key="navMenu.entity.id" :data="navMenu" :index="navMenu.entity.name">
+        <template slot="title">
+          <i :class="navMenu.entity.icon"></i>
+          <span> {{navMenu.entity.alias}}</span>
+        </template>
+        <!-- 递归 -->
+        <NavMenu :navMenus="navMenu.childs"></NavMenu>
+      </el-submenu>
+    </template>
+
+  </div>
 </template>
 
 <script>
   export default {
     name: 'NavMenu',
-    data () {
-      return {
-        navList: [
-          {name: '/index', navItem: '首页'},
-          {name: '/library', navItem: '人员信息登记'},
-          {name: '/jotter', navItem: '物资申请'},
-          {name: '/admin', navItem: '健康咨询'}
-        ]
-      }
-    }
+    props: ['navMenus'],
+    data() {
+      return {}
+    },
+    methods: {}
   }
 </script>
 
-<style scoped>
-  a{
-    text-decoration: none;
-  }
-  span {
-    pointer-events: none;
-  }
+<style>
+
 </style>

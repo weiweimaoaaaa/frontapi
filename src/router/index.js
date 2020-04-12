@@ -5,14 +5,18 @@ import AppIndex from '@/components/home/AppIndex'
 import Login from '@/components/Login'
 import Signin from '../components/home/Signin'
 import Home from '../components/Home'
-import LibraryIndex from '../components/library/LibraryIndex'
-
+import store from '../store'
 Vue.use(Router)
 
 export default new Router({
   mode:'history',
   routes: [
     // 下面都是固定的写法
+    {
+      path: '/',
+      redirect: '/login',
+
+    },
     {
       path: '/login',
       name: 'Login',
@@ -29,25 +33,78 @@ export default new Router({
       name: 'Home',
       component: Home,
       // home页面并不需要被访问
-      redirect: '/index',
+      redirect: '/aa',
       children: [
         {
-          path: '/index',
-          name: 'AppIndex',
-          component: AppIndex,
+          path: '/aa',
+          name: 'aa',
+          component: () =>
+            import('../views/aa.vue'),
           meta: {
             requireAuth: true
           }
         },
         {
-          path:'/library',
-          name:'Library',
-          component:LibraryIndex,
+          path: '/authManage',
+          name: 'authManage',
+          component: () =>
+            import('../views/authManage.vue'),
           meta: {
             requireAuth: true
           }
-        }
-      ]
+        },
+        {
+          path: '/roleManage',
+          name: 'roleManage',
+          component: () =>
+            import('../views/roleManage.vue'),
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
+          path: '/menuManage',
+          name: 'menuManage',
+          component: () =>
+            import('../views/menuManage.vue')
+        },
+        {
+          path: '/groupManage',
+          name: 'groupManage',
+          component: () =>
+            import('../views/groupManage.vue')
+        },
+        {
+          path: '/classifyManage4',
+          name: 'classifyManage4',
+          component: () =>
+            import('../views/classifyManage4.vue')
+        },
+        {
+          path: '/emailManage',
+          name: 'emailManage',
+          component: () =>
+            import('../views/emailManage.vue')
+        },
+        {
+          path: '/passManage',
+          name: 'passManage',
+          component: () =>
+            import('../views/passManage.vue')
+        },
+        {
+          path: '/integralManage',
+          name: 'integralManage',
+          component: () =>
+            import('../views/integralManage.vue')
+        },
+        {
+          path: '/integralManage',
+          name: 'integralManage',
+          component: () =>
+            import('../views/integralManage.vue')
+        },
+        ]
     }
   ]
 })

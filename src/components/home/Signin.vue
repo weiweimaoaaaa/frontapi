@@ -14,14 +14,13 @@
     <el-form-item label="确认密码" prop="checkPass">
       <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
     </el-form-item>
-
     <el-form-item>
       <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
       <el-button @click="resetForm('ruleForm')">重置</el-button>
       <el-button @click="comeback">返回</el-button>
     </el-form-item>
+    <div>{{msg}}</div>
   </el-form>
-  <div>{{msg}}</div>
   </body>
 </template>
 
@@ -37,7 +36,7 @@
           if (value.length===0) {
             callback(new Error('请输入身份证号'));
           } else {
-            if (value.length !== 18) {
+            if (value.length !== 10) {
               callback(new Error('输入格式有误'));
             } else {
               callback();
@@ -74,13 +73,14 @@
 
       }
       return {
+        msg:'',
         ruleForm: {
           pass: '',
           checkPass: '',
           idcard: '',
           username:'',
-          msg:'',
         },
+
         rules: {
           pass: [
             { validator: validatePass, trigger: 'blur' }
@@ -99,12 +99,34 @@
       };
     },
     methods: {
+      add(){
+        var _this=this;
+        _this.form.push(this.ruleForm);
+      },
+
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
+          console.log({    //这里是发送给后台的数据
+            username: this.ruleForm.username,
+            password: this.ruleForm.pass,
+            idcard: this.ruleForm.idcard
+          });
           if (valid) {
-            this.$axios.post('/api/signin',{username:this.username,password:this.pass,idcard:this.idcard})
+            this.$axios({
+              method:'post',
+                url:'/signin',
+                data:JSON.stringify({    //这里是发送给后台的数据
+                  username: this.ruleForm.username,
+                  password: this.ruleForm.pass,
+                  idcard: this.ruleForm.idcard
+                }),
+                headers: {
+                  'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
+                },
+            }
+            )
               .then(result=>{
-                this.msg = result.data.msg
+                this.msg = result.data;
               })
               .catch(err=>{
 

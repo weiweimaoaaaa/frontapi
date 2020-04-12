@@ -1,42 +1,67 @@
 <template>
-  <div style="margin-top: 40px">
-    <side-menu id="side-menu"></side-menu>
-    <div class="home">
-      <div id="header-div">
-        <carousel></carousel>
-      </div>
-    </div>
-  </div>
+  <el-card class="card-carousel">
+    <el-carousel  class="push" :interval="4000" arrow="always">
+      <el-carousel-item v-for="item in items" :key="item.id">
+        <a :href=item.link target="_blank">
+          <img :src=item.img alt="" class="carousel_img">
+        </a>
+        <h3>{{item.title}}</h3>
+      </el-carousel-item>
+    </el-carousel>
+  </el-card>
 </template>
 
-<script>
-  import Carousel from './Carousel'
-  import SideMenu from './SideMenu'
-  export default {
-    name: 'AppIndex',
-    components:{Carousel,SideMenu}
-  }
-</script>
-
-<style scoped>
-  .home {
-    width: 990px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: -20px;
-
+<style>
+  .el-carousel__item h3 {
+    color: black;
+    font-size: 15px;
+    /*line-height: 300px;*/
+    bottom: 43px;
+    float: left;
+    position: relative;
   }
 
-  #header-div {
-    padding-bottom: 20px;
-    padding-left: 5px;
-    background-color: white;
+  .card-carousel {
+    margin: 0 auto;
+  //margin-left: 20px;
+  //width: 680px;
+  //height: 320px;
   }
 
-  #side-menu {
-    position: fixed;
-    margin-left: 50%;
-    left: -680px;
-    top: 100px;
+  .push {
+    /*margin-left: -15px;*/
+  }
+
+  .carousel_img {
+    height: 100%;
+    width: 100%;
+    text-align: center;
   }
 </style>
+
+<script>
+  export default {
+    name: 'AppIndex',
+    data: function () {
+      return {
+        items: [{
+          id: 1,
+          title: 'How2J.cn - Java 全栈学习网站',
+          img: '../../../static/img/carousel/how2j.png',
+          link: 'http://how2j.cn?p=50613'},
+          {
+            id: 2,
+            title: 'Vue.js - 渐进式 JavaScript 框架',
+            img: '../../../static/img/carousel/vue.png',
+            link: 'https://cn.vuejs.org/'
+          },
+          {
+            id: 3,
+            title: 'element-全国疫情大数据',
+            img: '../../../static/img/carousel/element.png',
+            link: 'https://ra.mbd.baidu.com/r/fvew8nx?f=cp&u=03890d829ad62afa'
+          }]
+      }
+    }
+  }
+</script>
