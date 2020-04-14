@@ -1,32 +1,65 @@
 <template>
   <div id="menuManage">
-    <el-form label-width="80px" class="demo-ruleForm">
+    <body id="poster">
+    <el-form v-for="(item,index)  in form" :model="item" :key="index" label-width="80px" class="demo-ruleForm" style="background-color: darkkhaki">
       <el-form-item label="填报人">
-        <el-input v-model="count"></el-input>
+        <el-input v-model="item.name"></el-input>
       </el-form-item>
       <el-form-item label="填报日期">
-        <el-input readonly v-model="date"></el-input>
+        <el-input readonly v-model="item.date"></el-input>
       </el-form-item>
       <el-form-item label="今日体温">
-        <el-input v-model="region"></el-input>
+        <el-input v-model="item.region"></el-input>
       </el-form-item>
       <el-form-item label="是否咳嗽">
-        <el-radio-group v-model="resource" size="medium">
+        <el-radio-group v-model="item.resource" size="medium">
           <el-radio border class="radiosize" label="是"></el-radio>
           <el-radio border class="radiosize" label="否"></el-radio>
         </el-radio-group>
       </el-form-item>
+      <el-form-item label="是否就医">
+        <el-radio-group v-model="item.ishostipal" size="medium">
+          <el-radio border label="是"></el-radio>
+          <el-radio border label="否"></el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <div v-if="item.ishostipal=='是'">
+        <el-form-item label="就医医院">
+          <el-input v-model="item.hospital"></el-input>
+        </el-form-item>
+      </div>
       <el-form-item label="是否气促">
-        <el-radio-group v-model="resource2" size="medium">
+        <el-radio-group v-model="item.resource2" size="medium">
           <el-radio border  label="是"></el-radio>
           <el-radio border  label="否"></el-radio>
         </el-radio-group>
       </el-form-item>
-      <h1>{{this.$store.state.username}}</h1>
+      <el-form-item label="是否隔离">
+        <el-radio-group v-model="item.isdivide" size="medium">
+          <el-radio border  label="是"></el-radio>
+          <el-radio border  label="否"></el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="是否疑似">
+        <el-radio-group v-model="item.suspected" size="medium">
+          <el-radio border  label="是"></el-radio>
+          <el-radio border  label="否"></el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="是否确诊">
+        <el-radio-group v-model="item.diagnosis" size="medium">
+          <el-radio border  label="是"></el-radio>
+          <el-radio border  label="否"></el-radio>
+        </el-radio-group>
+      </el-form-item>
     </el-form>
     <el-form>
-
+      <el-form-item style="width: 100%">
+       <el-button type="primary" style="text-align: center;width: 20%;background: #505458" v-on:click="add">提交</el-button>
+       <el-button type="primary" style="text-align: center;width: 20%;background: #505458" v-on:click="add">增加人员</el-button>
+      </el-form-item>
     </el-form>
+    </body>
   </div>
 </template>
 
@@ -35,8 +68,22 @@
     data() {
       return {
         name:'',
-        form:[{}],
+        form:[{
+          hostipal:'',
+        }
+        ],
+        model:{
+          date:'',
+          name:'',
+          hostipal:'',
+        },
+
+        isdivide:'',
+        suspected:'',
+        diagnosis:'',
+        ishostipal:'',
         labelPosition:'left',
+        hospital:'',
         resource:'',
         resource2:'',
           date:'',
@@ -51,14 +98,19 @@
       }
     },
     created: function() {
+      this.form[0].name=this.$store.state.user.username;
       var aData = new Date();
-      this.date = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
+      this.form[0].date = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
+      this.model.date=aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
       console.log(this.date);
       console.log(this.$store.state.user.username);
     },
     methods:{
-      aaa() {
-        console.log(this.resource);
+       add(){
+         this.form.push(this.model);
+       },
+      submit(){
+
       }
     }
 
@@ -73,7 +125,7 @@
     background-clip: padding-box;
     margin: 20px auto;
     margin-left: 400px;
-    width: 400px;
+    width: 500px;
     padding: 35px 35px 15px 35px;
     background: #fff;
     border: 1px solid #eaeaea;
@@ -81,9 +133,12 @@
   }
   #menuManage {
     background-position: center;
+  }
+  #poster {
+    background-position: center;
     height: 100%;
     width: 100%;
     background-size: cover;
-    position: fixed;
+    position: absolute;
   }
 </style>

@@ -73,7 +73,7 @@
                   id: 5,
                   name: "groupManage",
                   icon: "el-icon-mobile-phone\r\n",
-                  alias: "分组管理",
+                  alias: "家庭信息管理",
                   value: "/system/group"
                 }
               }
@@ -85,7 +85,7 @@
               id: 6,
               name: "userManage",
               icon: "el-icon-news",
-              alias: "三级菜单"
+              alias: "家庭申请"
             },
             //二级
             childs: [
@@ -94,7 +94,7 @@
                   id: 7,
                   name: "accountManage",
                   icon: "el-icon-phone-outline\r\n",
-                  alias: "帐号管理",
+                  alias: "药品 便民卡",
                   value: ""
                 },
                 //三级
@@ -104,7 +104,7 @@
                       id: 14,
                       name: "emailManage",
                       icon: "el-icon-sold-out\r\n",
-                      alias: "邮箱管理",
+                      alias: "药品申请",
                       value: "/content/email"
                     }
                   },
