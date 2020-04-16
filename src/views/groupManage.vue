@@ -38,8 +38,8 @@
       </el-table-column>
       <el-table-column prop="id" label="身份证号" width="150px"></el-table-column>
       <el-table-column prop="name" label="姓名" width="150px"></el-table-column>
-      <el-table-column prop="Type" label="性别" width="150px"></el-table-column>
-      <el-table-column prop="telephone" label="电话号码" width="150px"></el-table-column>
+      <el-table-column prop="sex" label="性别" width="150px"></el-table-column>
+      <el-table-column prop="phone" label="电话号码" width="150px"></el-table-column>
       <el-table-column prop="address" label="家庭地址" width="150px"></el-table-column>
       <el-table-column label="编辑" width="150">
         <template slot-scope="scope">
@@ -82,7 +82,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="电话号码" style="width:250px">
-          <el-input v-model="man.telephone" placeholder="请输入电话号码"></el-input>
+          <el-input v-model="man.phone" placeholder="请输入电话号码"></el-input>
         </el-form-item>
         <el-form-item label="家庭地址" style="width:250px">
           <el-input v-model="man.address" placeholder="请输入社区家庭地址"></el-input>
@@ -122,6 +122,7 @@
         page: 1,
         manList: [
         ],
+        delmanmodel:{id:'',name:'',sex:'',phone:'',address:''},
         address:'',
         man: {
           address:'',
@@ -156,7 +157,7 @@
         this.$axios({
           method:'post',
           url:'/getFamilyInfo',
-          data:JSON.stringify(
+          data: JSON.stringify(
             this.$store.state.user.idCard,
           ),
           headers: {
@@ -164,10 +165,15 @@
           },
         }).then(res=> {
           console.log(res)
-          if (res != null) {
-            this.manList = res.data.List;
+          if (res.data.result.length !== 0) {
+            this.manList = res.data.result;
             this.total = this.manList.length;
             this.address = this.manList[0].address;
+            this.man.address=this.address;
+          }
+          else
+          {
+            this.manList=[];
           }
         }
       ) .catch(err=>{
@@ -197,9 +203,6 @@
                 type: "success"
               });
               this.getmanList();
-              this.man = {
-                address: this.address,
-              }
             }
           }
       )
@@ -207,23 +210,37 @@
       delman(row) {
         this.addFlag = false;
         this.dialog2Visible = true;
-        this.curId = row.id;
+        this.delmanmodel.id = row.id;
+        this.delmanmodel.name=row.name;
+        this.delmanmodel.phone=row.phone;
+        this.delmanmodel.address=row.address;
+        this.delmanmodel.sex=row.sex;
+
       },
       async handleDel() {
           this.$axios({
             method:'post',
-            url:"/del",
-            data:JSON.stringify(
-              this.curId,
-            )
-          });
-          this.curId = "";
-          this.dialog2Visible = false;
-          this.$message({
-            message: res.data.Msg,
-            type: "success"
-          });
-          this.getmanList();
+            url:"/deleteUserInfo",
+            data:JSON.stringify({
+              id:this.delmanmodel.id,
+              name:this.delmanmodel.name,
+              phone:this.delmanmodel.phone,
+              sex:this.delmanmodel.sex,
+              address:this.delmanmodel.address,
+              }
+            ),
+            headers: {
+              'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
+            },
+          }).then(res=>{
+            this.delmanmodel={};
+            this.dialog2Visible = false;
+            this.$message({
+              message: res.data.message,
+              type: "success"
+            });
+            this.getmanList();
+          })
         },
       editman(row) {
         this.man = row;

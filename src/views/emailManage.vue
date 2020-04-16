@@ -104,31 +104,40 @@ export default {
       done();
     },
     async submitForm(){
-      this.isbutton===false;
       this.digit.state='2';
-      try {
-        let res = await axios.post(
-          "http://127.0.0.1:8843/api/save",
-          qs.stringify({
-            date1: this.ruleForm.date1,
-            date2: this.ruleForm.date2,
-            idCard: this.ruleForm.idcard,
-            username: this.ruleForm.username,
-          })
-        );
-        this.dialogVisible = false;
-        this.man = {};
-        this.$message({
-          message: res.data.Msg,
-          type: "success"
-        });
-        this.getmanList();
-      } catch (e) {
-        console.log(e);
-      }
+     this.$axios({
+        method:'post',
+        url: "/convenienceCardApply",
+       data:JSON.stringify({
+         date1: this.ruleForm.date1,
+         date2: this.ruleForm.date2,
+         idCard: this.ruleForm.idcard,
+         username: this.ruleForm.username,
+       })
+     }).then(res=>{
+       this.$message({
+         message: res.data.message,
+         type: "success"
+       });
+     })
     },
     check(){
       this.seeVisible=true;
+      this.$axios({
+        method:'post',
+        url: "/getApplyStatus",
+        data:JSON.stringify({
+          date1: this.ruleForm.date1,
+          date2: this.ruleForm.date2,
+          idCard: this.ruleForm.idcard,
+          username: this.ruleForm.username,
+        })
+      }).then(res=>{
+        this.$message({
+          message: res.data.message,
+          type: "success"
+        });
+      })
     }
 
   }
