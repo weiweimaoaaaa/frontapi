@@ -3,10 +3,11 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-const store=new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     user: {
-      username: window.localStorage.getItem('user' || '[]') == null ? '' : JSON.parse(window.localStorage.getItem('user' || '[]')).username
+      username: window.localStorage.getItem('user' || '[]') == null ? '' : JSON.parse(window.localStorage.getItem('user' || '[]')).username,
+      idCard: window.localStorage.getItem('user' || '[]') == null ? '' : JSON.parse(window.localStorage.getItem('user' || '[]')).idCard
     }
   },
   mutations: {
@@ -17,3 +18,4 @@ const store=new Vuex.Store({
   }
 })
 export default store
+

@@ -36,21 +36,37 @@
     methods: {
       login () {
         var _this = this
-        console.log(this.$store.state)
         this.$axios
-          .post('/login', {
+          .post('/login',{
+            idCard:'412726199703047114',
             username: this.loginForm.username,
             password: this.loginForm.password
           })
           .then(successResponse => {
             if (successResponse.data.code === 200) {
-              // var data = this.loginForm
-              _this.$store.commit('login', _this.loginForm)
+              var data = successResponse.data.result
+              console.log(data)
+              _this.$store.commit('login',data)
+              console.log(_this.$store.state.user.idCard)
               var path = this.$route.query.redirect
               this.$router.replace({path: path === '/' || path === undefined ? '/aa' : path})
             }
+            else
+            {
+              console.log(successResponse)
+              if(successResponse.data.code===400) {
+                this.$message(
+                  {
+                    message: '帐号或密码错误！',
+                    type: 'warning',
+                  }
+                )
+              }
+            }
           })
           .catch(failResponse => {
+            console.log(failResponse)
+
           })
       },
       signin(){

@@ -36,7 +36,7 @@
           if (value.length===0) {
             callback(new Error('请输入身份证号'));
           } else {
-            if (value.length !== 10) {
+            if (value.length !== 18) {
               callback(new Error('输入格式有误'));
             } else {
               callback();
@@ -118,13 +118,12 @@
                 data:JSON.stringify({    //这里是发送给后台的数据
                   username: this.ruleForm.username,
                   password: this.ruleForm.pass,
-                  idcard: this.ruleForm.idcard
+                  idCard: this.ruleForm.idcard
                 }),
                 headers: {
                   'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
                 },
-            }
-            )
+            })
               .then(result=>{
                 this.msg = result.data;
               })

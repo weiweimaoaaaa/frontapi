@@ -15,7 +15,7 @@
         <el-input readonly v-model="ruleForm.date2" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm">提交</el-button>
+        <el-button type="primary" v-show="isbutton===true" @click="submitForm">提交</el-button>
         <el-button type="primary" @click="check">查看申请信息</el-button>
       </el-form-item>
     </el-form>
@@ -36,17 +36,17 @@
 
       <el-row style="padding: 20px 0 20px 0;border-bottom:1px solid #ddd">
         <el-col :span="24">
-          <span>开始时间：{{digit.startTime}}</span>
+          <span>剩余出行次数：{{digit.count}}</span>
         </el-col>
       </el-row>
 
       <el-row style="padding: 20px 0 0 0">
         <el-col :span="24">
-          <span>结束时间：{{digit.endTime}}</span>
+          <span>出行时间/次：{{digit.time}}</span>
         </el-col>
       </el-row>
 
-      <el-row style="padding: 20px 0 0 0" v-if="comment!=null">
+      <el-row style="padding: 20px 0 0 0">
         <el-col :span="24">
           <span>审核意见：{{digit.comment}}</span>
         </el-col>
@@ -54,8 +54,9 @@
 
       <el-row style="padding: 20px 0 0 0" v-if="digit.state!=null">
         <el-col :span="24">
-          <span v-if="digit.state === '1'">审核：<el-button type="success">{{digit.state === '1' ?'通过':'不通过'}}</el-button></span>
-          <span v-if="digit.state === '0'">审核：<el-button type="danger">{{digit.state === '1' ?'通过':'不通过'}}</el-button></span>
+          <span v-if="digit.state === '1'">审核：<el-button type="success">通过</el-button></span>
+          <span v-if="digit.state === '0'">审核：<el-button type="danger">不通过</el-button></span>
+          <span v-if="digit.state === '2'">审核：<el-button type="wait">等待审核</el-button></span>
         </el-col>
       </el-row>
     </div>
@@ -69,6 +70,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data(){
     return{
@@ -79,12 +82,19 @@ export default {
         idcard: '',
         username:'',
       },
+      isbutton:true,
       digit:{
+        count:2,
+
+        state:'',
+
       },
 
     }
   },
   created () {
+    this.ruleForm.idcard=this.$store.state.user.idCard;
+    this.ruleForm.username=this.$store.state.user.username;
     var aData = new Date();
     this.ruleForm.date1 = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
     this.ruleForm.date2=aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + (aData.getDate()+1)+" 00:00:00-23:59:59";
@@ -93,8 +103,29 @@ export default {
     handleClose(done){
       done();
     },
-    submitForm(){
-
+    async submitForm(){
+      this.isbutton===false;
+      this.digit.state='2';
+      try {
+        let res = await axios.post(
+          "http://127.0.0.1:8843/api/save",
+          qs.stringify({
+            date1: this.ruleForm.date1,
+            date2: this.ruleForm.date2,
+            idCard: this.ruleForm.idcard,
+            username: this.ruleForm.username,
+          })
+        );
+        this.dialogVisible = false;
+        this.man = {};
+        this.$message({
+          message: res.data.Msg,
+          type: "success"
+        });
+        this.getmanList();
+      } catch (e) {
+        console.log(e);
+      }
     },
     check(){
       this.seeVisible=true;

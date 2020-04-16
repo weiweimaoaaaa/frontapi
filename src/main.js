@@ -4,12 +4,12 @@ import router from './router'
 import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import Qs from 'qs'
+import qs from 'qs'
 import Vuex from 'vuex'
 var axios = require('axios')
 axios.defaults.baseURL = 'http://localhost:8443/api'
 Vue.prototype.$axios = axios
-Vue.prototype.qs=Qs
+Vue.prototype.$qs=qs
 Vue.config.productionTip = false
 
 Vue.use(Vuex)

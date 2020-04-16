@@ -104,7 +104,7 @@
                       id: 14,
                       name: "emailManage",
                       icon: "el-icon-sold-out\r\n",
-                      alias: "药品申请",
+                      alias: "便民卡申请",
                       value: "/content/email"
                     }
                   },
@@ -113,7 +113,7 @@
                       id: 13,
                       name: "passManage",
                       icon: "el-icon-service\r\n",
-                      alias: "密码管理",
+                      alias: "药品申请",
                       value: "/content/pass"
                     }
                   }

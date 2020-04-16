@@ -23,7 +23,7 @@
           <el-radio border label="否"></el-radio>
         </el-radio-group>
       </el-form-item>
-      <div v-if="item.ishostipal=='是'">
+      <div v-if="item.ishostipal==='是'">
         <el-form-item label="就医医院">
           <el-input v-model="item.hospital"></el-input>
         </el-form-item>
@@ -55,7 +55,7 @@
     </el-form>
     <el-form>
       <el-form-item style="width: 100%">
-       <el-button type="primary" style="text-align: center;width: 20%;background: #505458" v-on:click="add">提交</el-button>
+       <el-button type="primary" style="text-align: center;width: 20%;background: #505458" v-on:click="submit">提交</el-button>
        <el-button type="primary" style="text-align: center;width: 20%;background: #505458" v-on:click="add">增加人员</el-button>
       </el-form-item>
     </el-form>
@@ -91,6 +91,7 @@
           type: '家庭单位'
       };
     },
+
     computed:{
       count(){
         console.log(this.$store.state.user.username);
@@ -102,16 +103,35 @@
       var aData = new Date();
       this.form[0].date = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
       this.model.date=aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
-      console.log(this.date);
-      console.log(this.$store.state.user.username);
+
     },
     methods:{
        add(){
          this.form.push(this.model);
        },
       submit(){
+        this.$axios({
+          method: 'post',
+          url:"/userInfoRegister",
+          data:JSON.stringify(
+            this.form,
+          ),
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
+          },
+        }).then(res=> {
+            console.log(res);
+            if(res.data.code===200) {
+              this.$message({
+                message: res.data.message,
+                type: "success"
+              });
+            }
+          }
+        ).catch(err=>{
 
-      }
+        })
+      },
     }
 
 

@@ -1,6 +1,6 @@
 <template>
   <div class="accept-container">
-    <iframe style="position:absolute;top:0px;left: 200px;" id="show-iframe"  frameborder=0 name="showHere" scrolling=auto src="https://voice.baidu.com/act/newpneumonia/newpneumonia/?from=osari_pc_3"></iframe>
+    <iframe style="position:absolute;top:0px;left: 240px;" id="show-iframe"  frameborder=0 name="showHere" scrolling=auto src="https://voice.baidu.com/act/newpneumonia/newpneumonia/?from=osari_pc_3"></iframe>
   </div>
 </template>
 
