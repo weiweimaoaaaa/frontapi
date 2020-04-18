@@ -10,7 +10,7 @@
     >
       <el-menu-item index="1">家庭人员管理</el-menu-item>
     </el-menu>
-    <br />
+    <br/>
     <el-row>
       <el-col :span="1" class="grid">
         <el-button
@@ -63,7 +63,7 @@
       :total="total">
     </el-pagination>
     <el-dialog
-      :title="addFlag?'新增图书':'修改图书'"
+      :title="addFlag?'新增家庭成员':'修改家庭成员'"
       style="text-align:left !important"
       :visible.sync="dialogVisible"
       :before-close="handleClose"
@@ -90,7 +90,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="success" @click="saveman()">提交</el-button>
-        <el-button type="primary" @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="quxiao()">取消</el-button>
       </span>
     </el-dialog>
     <el-dialog
@@ -169,6 +169,7 @@
             this.manList = res.data.result;
             this.total = this.manList.length;
             this.address = this.manList[0].address;
+            this.man={};
             this.man.address=this.address;
           }
           else
@@ -181,31 +182,61 @@
         })
       },
       saveman() {
-          this.$axios({
-            method: 'post',
-            url:"/userInfoRegister",
-            data:JSON.stringify({
-              id: this.man.id,
-              sex:this.man.sex,
-              name: this.man.name,
-              phone: this.man.telephone,
-              address: this.man.address
-            }),
-            headers: {
-              'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
-            },
-          }).then(res=> {
-            console.log(res);
-            if(res.data.code===200) {
-              this.dialogVisible = false;
-              this.$message({
-                message: res.data.message,
-                type: "success"
-              });
-              this.getmanList();
-            }
+          if(this.addFlag) {
+            this.$axios({
+              method: 'post',
+              url: "/userInfoRegister",
+              data: JSON.stringify({
+                id: this.man.id,
+                sex: this.man.sex,
+                name: this.man.name,
+                phone: this.man.phone,
+                address: this.man.address
+              }),
+              headers: {
+                'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
+              },
+            }).then(res => {
+                console.log(res);
+                if (res.data.code === 200) {
+                  this.dialogVisible = false;
+                  this.$message({
+                    message: res.data.message,
+                    type: "success"
+                  });
+                  this.getmanList();
+                }
+              }
+            )
           }
-      )
+          else
+          {
+            this.$axios({
+              method: 'post',
+              url: "/updateUserInfo",
+              data: JSON.stringify({
+                id: this.man.id,
+                sex: this.man.sex,
+                name: this.man.name,
+                phone: this.man.phone,
+                address: this.man.address
+              }),
+              headers: {
+                'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
+              },
+            }).then(res => {
+                console.log(res);
+                if (res.data.code === 200) {
+                  this.dialogVisible = false;
+                  this.$message({
+                    message: res.data.message,
+                    type: "success"
+                  });
+                  this.getmanList();
+                }
+              }
+            )
+          }
       },
       delman(row) {
         this.addFlag = false;
@@ -246,6 +277,11 @@
         this.man = row;
         this.dialogVisible = true;
         this.addFlag = false;
+      },
+      quxiao(){
+        this.dialogVisible = false;
+        this.man={};
+        this.man.address=this.address;
       }
     },
     mounted() {

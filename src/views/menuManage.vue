@@ -53,8 +53,8 @@
         </el-radio-group>
       </el-form-item>
     </el-form>
-    <el-form>
-      <el-form-item style="width: 100%">
+    <el-form style="width: 50%;position: center">
+      <el-form-item style="width: 100%;margin-left: 330px;">
        <el-button type="primary" style="text-align: center;width: 20%;background: #505458" v-on:click="submit">提交</el-button>
        <el-button type="primary" style="text-align: center;width: 20%;background: #505458" v-on:click="add">增加人员</el-button>
       </el-form-item>
@@ -77,7 +77,7 @@
           name:'',
           hostipal:'',
         },
-
+        manList:{},
         isdivide:'',
         suspected:'',
         diagnosis:'',
@@ -132,9 +132,27 @@
 
         })
       },
-    }
+    },
+    async getmanList() {
+      this.$axios({
+        method:'post',
+        url:'/getFamilyInfo',
+        data: JSON.stringify(
+          this.$store.state.user.idCard,
+        ),
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
+        },
+      }).then(res=> {
+          console.log(res)
+          if (res.data.result.length !== 0) {
+            this.manList = res.data.result[0];
+          }
+        }
+      ) .catch(err=>{
 
-
+      })
+    },
   }
 </script>
 

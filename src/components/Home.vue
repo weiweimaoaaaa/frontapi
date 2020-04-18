@@ -28,10 +28,29 @@
             //一级
             entity: {
               id: 0,
-              name: "aa",
+              name: "aamanage",
               icon: "el-icon-message",
-              alias: "全国疫情通报"
-            }
+              alias: "疫情消息"
+            },
+            //二级
+            childs: [
+              {
+                entity: {
+                  id: 55,
+                  name: "aa",
+                  icon: "el-icon-message",
+                  alias: "全国疫情通报"
+                },
+              },
+              {
+                entity: {
+                  id: 66,
+                  name: "knowledge",
+                  icon: "el-icon-message",
+                  alias: "疫情知识"
+                },
+              },
+            ]
           },
           {
             //一级
@@ -64,7 +83,7 @@
                   id: 2,
                   name: "menuManage",
                   icon: "el-icon-edit",
-                  alias: "健康信息管理",
+                  alias: "健康信息填报",
                   value: "/system/menu"
                 }
               },
@@ -104,7 +123,7 @@
                       id: 14,
                       name: "emailManage",
                       icon: "el-icon-sold-out\r\n",
-                      alias: "便民卡申请",
+                      alias: "药品申请",
                       value: "/content/email"
                     }
                   },
@@ -113,7 +132,7 @@
                       id: 13,
                       name: "passManage",
                       icon: "el-icon-service\r\n",
-                      alias: "药品申请",
+                      alias: "便民卡申请",
                       value: "/content/pass"
                     }
                   }

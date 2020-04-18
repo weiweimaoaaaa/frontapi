@@ -45,6 +45,15 @@ export default new Router({
           }
         },
         {
+          path: '/knowledge',
+          name: 'knowledge',
+          component: () =>
+            import('../views/knowledge.vue'),
+          meta: {
+            requireAuth: true
+          }
+        },
+        {
           path: '/authManage',
           name: 'authManage',
           component: () =>
