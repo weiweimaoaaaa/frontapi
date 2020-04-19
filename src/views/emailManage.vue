@@ -151,11 +151,16 @@
         page: 1,
         manList: [
         ],
+        sendmessage:[],
+        materal:{
+          finished:1,
+        },
         delmanmodel:{},
         man: {
         },
         addFlag: true,
-        date: ""
+        date: "",
+        msg:''
       };
     },
     created () {
@@ -164,6 +169,7 @@
       var aData = new Date();
       this.man.applyDate = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
       this.date=aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
+      this.getmateralList()
     },
     watch:{
       //2.x版本的bug 以前用1.x发现没有 假如现在是第三页，只有一条数据了。将其删除，就没有第三页了。应该跳到第二页展示出5条数据。
@@ -188,18 +194,29 @@
         this.getmanList();
       },
       submit(){
+        for(let i=0;i<this.manList.length;i++)
+        {
+           this.sendmessage.push(this.materal)
+           this.sendmessage[i].user=this.manList[i].id;
+           this.sendmessage[i].applyDate=this.manList[i].applyDate;
+           this.sendmessage[i].category=this.manList[i].category;
+           this.sendmessage[i].name=this.manList[i].name;
+           this.sendmessage[i].number=this.manList[i].number;
+        }
+        console.log(this.sendmessage);
         this.$axios({
           method:'post',
-          url:'/signin',
+          url:'/registerMaterialApply',
           data:JSON.stringify(
-            this.manList,
+            this.sendmessage[0],
           ),
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
           },
         })
           .then(result=>{
-            this.msg = result.data;
+            this.msg = result.data.message;
+            console.log(this.msg)
           })
           .catch(err=>{
 
@@ -226,6 +243,35 @@
           this.man={id:this.$store.state.user.idCard,username:this.$store.state.user.username,applyDate:this.date};
           this.dialogVisible = false;
         }
+      },
+      async getmateralList() {
+        this.$axios({
+          method:'post',
+          url:'/getMaterialsApplyInfo',
+          data: JSON.stringify(
+            this.$store.state.user.idCard,
+          ),
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
+          },
+        }).then(res=> {
+            console.log(res)
+            if (res.data.result.length !== 0) {
+              this.manList = res.data.result;
+              for(let item in this.manList)
+              {
+                item.id=item.user;
+                item.username=this.$store.state.user.username
+              }
+            }
+            else
+            {
+              this.manList=[];
+            }
+          }
+        ) .catch(err=>{
+
+        })
       },
       delman(row) {
         this.addFlag = false;
@@ -254,7 +300,7 @@
         this.dialogVisible = false;
         this.man={};
         this.man.address=this.address;
-      }
+      },
     },
 
   };

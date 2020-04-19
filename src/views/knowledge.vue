@@ -41,7 +41,7 @@
       },1000)
     },
     destroyed () {
-      this.clearInterval(this.timer);
+      window.clearInterval(this.timer);
     }
   }
 </script>
