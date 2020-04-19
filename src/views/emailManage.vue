@@ -8,7 +8,7 @@
       text-color="#fff"
       active-text-color="#ffd04b"
     >
-      <el-menu-item index="1">家庭人员管理</el-menu-item>
+      <el-menu-item index="1">物资申请管理</el-menu-item>
     </el-menu>
     <br/>
     <el-row>
@@ -37,10 +37,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="id" label="身份证号" width="150px"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="150px"></el-table-column>
-      <el-table-column prop="sex" label="性别" width="150px"></el-table-column>
-      <el-table-column prop="phone" label="电话号码" width="150px"></el-table-column>
-      <el-table-column prop="address" label="家庭地址" width="150px"></el-table-column>
+      <el-table-column prop="username" label="姓名" width="150px"></el-table-column>
+      <el-table-column prop="applyDate" label="申请日期" width="150px"></el-table-column>
+      <el-table-column prop="category" label="物资分类" width="150px"></el-table-column>
+      <el-table-column prop="name" label="物资姓名" width="150px"></el-table-column>
+      <el-table-column prop="number" label="物资数量" width="150px"></el-table-column>
       <el-table-column label="编辑" width="150">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" @click="editman(scope.row)">编辑</el-button>
@@ -52,6 +53,7 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-button type="primary" @click="submit()" style="margin-left:100px;width: 10%;background: #505458;border: none">提交</el-button>
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -73,19 +75,46 @@
           <el-input v-model="man.id" placeholder="请输入身份证号"></el-input>
         </el-form-item>
         <el-form-item label="姓名" style="width:280px">
-          <el-input v-model="man.name" placeholder="请输入性名"></el-input>
+          <el-input v-model="man.username" placeholder="请输入性名"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="region">
-          <el-select v-model="man.sex" placeholder="请选择性别">
-            <el-option label="男" value="男"></el-option>
-            <el-option label="女" value="女"></el-option>
+        <el-form-item label="类别" prop="region">
+          <el-select v-model="man.category" placeholder="请选择类别">
+            <el-option label="生活用品" value="生活用品"></el-option>
+            <el-option label="药品" value="药品"></el-option>
+            <el-option label="食物" value="食物"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="电话号码" style="width:250px">
-          <el-input v-model="man.phone" placeholder="请输入电话号码"></el-input>
+        <el-form-item v-if="man.category==='生活用品'" label="物资名称" style="width:250px">
+          <el-select v-model="man.name" placeholder="请选择物品">
+            <el-option label="卫生纸" value="卫生纸（袋）"></el-option>
+            <el-option label="牙膏" value="牙膏（支）"></el-option>
+            <el-option label="洗发液" value="洗发液（瓶）"></el-option>
+            <el-option label="沐浴露" value="沐浴露（瓶）"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="家庭地址" style="width:250px">
-          <el-input v-model="man.address" placeholder="请输入社区家庭地址"></el-input>
+        <el-form-item v-else-if="man.category==='药品'" label="物资名称" style="width:250px">
+          <el-select v-model="man.name" placeholder="请选择物品">
+            <el-option label="消毒液" value="消毒液"></el-option>
+            <el-option label="酒精" value="酒精"></el-option>
+            <el-option label="棉签" value="棉签"></el-option>
+            <el-option label="999感冒灵" value="999感冒灵"></el-option>
+            <el-option label="板蓝根" value="板蓝根"></el-option>
+            <el-option label="布洛芬" value="布洛芬"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-else-if="man.category==='食物'" label="物资名称" style="width:250px">
+          <el-select v-model="man.name" placeholder="请选择物品">
+            <el-option label="米" value="米"></el-option>
+            <el-option label="盐" value="盐"></el-option>
+            <el-option label="油" value="油"></el-option>
+            <el-option label="萝卜" value="萝卜"></el-option>
+            <el-option label="白菜" value="白菜"></el-option>
+            <el-option label="辣椒酱" value="辣椒酱"></el-option>
+            <el-option label="茄子" value="茄子"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="物资数量" style="width:250px">
+          <el-input type="number" v-model="man.number" placeholder="请输入物资数量" min="0"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -122,14 +151,19 @@
         page: 1,
         manList: [
         ],
-        delmanmodel:{id:'',name:'',sex:'',phone:'',address:''},
-        address:'',
+        delmanmodel:{},
         man: {
-          address:'',
         },
         addFlag: true,
-        curId: ""
+        date: ""
       };
+    },
+    created () {
+      this.man.id=this.$store.state.user.idCard;
+      this.man.username=this.$store.state.user.username;
+      var aData = new Date();
+      this.man.applyDate = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
+      this.date=aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
     },
     watch:{
       //2.x版本的bug 以前用1.x发现没有 假如现在是第三页，只有一条数据了。将其删除，就没有第三页了。应该跳到第二页展示出5条数据。
@@ -153,97 +187,63 @@
         this.page = val;
         this.getmanList();
       },
+      submit(){
+        this.$axios({
+          method:'post',
+          url:'/signin',
+          data:JSON.stringify(
+            this.manList,
+          ),
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
+          },
+        })
+          .then(result=>{
+            this.msg = result.data;
+          })
+          .catch(err=>{
+
+          })
+
+      },
       saveman() {
         if(this.addFlag) {
-          this.$axios({
-            method: 'post',
-            url: "/userInfoRegister",
-            data: JSON.stringify({
-              id: this.man.id,
-              sex: this.man.sex,
-              name: this.man.name,
-              phone: this.man.phone,
-              address: this.man.address
-            }),
-            headers: {
-              'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
-            },
-          }).then(res => {
-              console.log(res);
-              if (res.data.code === 200) {
-                this.dialogVisible = false;
-                this.$message({
-                  message: res.data.message,
-                  type: "success"
-                });
-                this.getmanList();
-              }
-            }
-          )
+          this.manList.push(this.man);
+          this.man={id:this.$store.state.user.idCard,username:this.$store.state.user.username,applyDate:this.date};
+          this.dialogVisible = false;
         }
         else
         {
-          this.$axios({
-            method: 'post',
-            url: "/updateUserInfo",
-            data: JSON.stringify({
-              id: this.man.id,
-              sex: this.man.sex,
-              name: this.man.name,
-              phone: this.man.phone,
-              address: this.man.address
-            }),
-            headers: {
-              'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
-            },
-          }).then(res => {
-              console.log(res);
-              if (res.data.code === 200) {
-                this.dialogVisible = false;
-                this.$message({
-                  message: res.data.message,
-                  type: "success"
-                });
-                this.getmanList();
-              }
-            }
-          )
+         for(let i=0;i<this.manList.length;i++)
+         {
+           if(this.man.id===this.manList[i].id)
+           {
+             this.manList.splice(i,1);
+             break;
+           }
+         }
+         this.manList=[...this.manList,this.man];
+          this.man={id:this.$store.state.user.idCard,username:this.$store.state.user.username,applyDate:this.date};
+          this.dialogVisible = false;
         }
       },
       delman(row) {
         this.addFlag = false;
         this.dialog2Visible = true;
-        this.delmanmodel.id = row.id;
-        this.delmanmodel.name=row.name;
-        this.delmanmodel.phone=row.phone;
-        this.delmanmodel.address=row.address;
-        this.delmanmodel.sex=row.sex;
+        this.delmanmodel= row;
 
       },
       async handleDel() {
-        this.$axios({
-          method:'post',
-          url:"/deleteUserInfo",
-          data:JSON.stringify({
-              id:this.delmanmodel.id,
-              name:this.delmanmodel.name,
-              phone:this.delmanmodel.phone,
-              sex:this.delmanmodel.sex,
-              address:this.delmanmodel.address,
-            }
-          ),
-          headers: {
-            'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
-          },
-        }).then(res=>{
-          this.delmanmodel={};
-          this.dialog2Visible = false;
-          this.$message({
-            message: res.data.message,
-            type: "success"
-          });
-          this.getmanList();
-        })
+        for(let i=0;i<this.manList.length;i++)
+        {
+          if(this.delmanmodel.id===this.manList[i].id)
+          {
+            this.manList.splice(i,1);
+            break;
+          }
+        }
+        this.delmanmodel={};
+        this.dialogVisible=false;
       },
       editman(row) {
         this.man = row;
@@ -256,10 +256,6 @@
         this.man.address=this.address;
       }
     },
-    mounted() {
-      this.getmanList();
-    },
-
 
   };
 </script>

@@ -26,6 +26,7 @@ export default {
   },
   methods: {
     line(result) {
+      console.log(result)
       let myChart = echarts.init(document.getElementById("main"));
       let legend = [];
       for (let key in result) {
@@ -79,8 +80,10 @@ export default {
       let data = {};
       if (val !== "all") {
         for (let key in this.all) {
+          console.log(reg,key)
           if (reg.test(key)) {
             data[key] = this.all[key];
+            console.log(data[key])
           }
         }
       } else {
@@ -88,8 +91,8 @@ export default {
           data[key] = this.all[key];
         }
       }
-      
-      
+
+
       this.line(data);
     }
   },

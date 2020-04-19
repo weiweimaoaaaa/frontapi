@@ -21,8 +21,8 @@
       @row-click="changefun">
       <el-table-column prop="id" label="身份证号" width="200px"></el-table-column>
       <el-table-column prop="name" label="姓名" width="200px"></el-table-column>
-      <el-table-column prop="date1" label="申请日期" width="200px"></el-table-column>
-      <el-table-column prop="date2" label="有效期" width="200px"></el-table-column>
+      <el-table-column prop="applyDate" label="申请日期" width="200px"></el-table-column>
+      <el-table-column prop="userDate" label="有效期" width="200px"></el-table-column>
       <el-table-column label="查看申请状态" width="200" column-key="567">
         <template slot-scope="scope">
           <el-button type="danger" icon="el-icon-edit" size="mini" @click="watchstate(scope.row)">申请状态</el-button>
@@ -69,10 +69,10 @@
           for(let k=0;k<this.tableData.length;k++)
           {
             this.sendmessage.push({
-                id:this.tableData[k].id,
+                user:this.tableData[k].id,
                 name:this.tableData[k].name,
-                date1:this.tableData[k].date1,
-                date2:this.tableData[k].date2,
+                applyDate:this.tableData[k].applyDate,
+                userDate:this.tableData[k].userDate,
               }
             )
           }
@@ -103,10 +103,10 @@
             {
               this.sendmessagesign.push(this.tableData[i]);
               this.sendmessage.push({
-                id:this.tableData[i].id,
+                user:this.tableData[i].id,
                 name:this.tableData[i].name,
-                date1:this.tableData[i].date1,
-                date2:this.tableData[i].date2,
+                applyDate:this.tableData[i].applyDate,
+                userDate:this.tableData[i].userDate,
               })
             }
           }
@@ -142,9 +142,9 @@
           method:'post',
           url: "/getApplyStatus",
           data:JSON.stringify({
-            date1: row.date1,
-            date2: row.date2,
-            idCard: row.id,
+            applyDate: row.applyDate,
+            userDate: row.userDate,
+            user: row.id,
             username: row.username,
           })
         }).then(res=>{
@@ -158,8 +158,8 @@
     },
     created () {
       var aData = new Date();
-      var date1 = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
-      var date2=aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + (aData.getDate()+1)+" 00:00:00-23:59:59";
+      var applyDate = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
+      var userDate=aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + (aData.getDate()+1)+" 00:00:00-23:59:59";
         this.$axios({
           method: 'post',
           url: '/getFamilyInfo',
@@ -174,8 +174,8 @@
               this.tableData = res.data.result
 
               for (let i = 0; i < this.tableData.length; i++) {
-                this.tableData[i].date1=date1;
-                this.tableData[i].date2=date2;
+                this.tableData[i].applyDate=applyDate;
+                this.tableData[i].userDate=userDate;
                 this.checkedGameId.push(this.tableData[i].id);
                 this.multipleSelection = this.checkedGameId;
               }
