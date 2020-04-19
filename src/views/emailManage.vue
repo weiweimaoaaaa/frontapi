@@ -36,7 +36,7 @@
           <span>{{(page - 1) * size + scope.$index + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="id" label="身份证号" width="150px"></el-table-column>
+      <el-table-column prop="user" label="身份证号" width="150px"></el-table-column>
       <el-table-column prop="username" label="姓名" width="150px"></el-table-column>
       <el-table-column prop="applyDate" label="申请日期" width="150px"></el-table-column>
       <el-table-column prop="category" label="物资分类" width="150px"></el-table-column>
@@ -72,7 +72,7 @@
     >
       <el-form ref="form" label-width="80px">
         <el-form-item label="身份证号" style="width:300px">
-          <el-input v-model="man.id" placeholder="请输入身份证号"></el-input>
+          <el-input v-model="man.user" placeholder="请输入身份证号"></el-input>
         </el-form-item>
         <el-form-item label="姓名" style="width:280px">
           <el-input v-model="man.username" placeholder="请输入性名"></el-input>
@@ -164,7 +164,7 @@
       };
     },
     created () {
-      this.man.id=this.$store.state.user.idCard;
+      this.man.user=this.$store.state.user.idCard;
       this.man.username=this.$store.state.user.username;
       var aData = new Date();
       this.man.applyDate = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
@@ -196,19 +196,14 @@
       submit(){
         for(let i=0;i<this.manList.length;i++)
         {
-           this.sendmessage.push(this.materal)
-           this.sendmessage[i].user=this.manList[i].id;
-           this.sendmessage[i].applyDate=this.manList[i].applyDate;
-           this.sendmessage[i].category=this.manList[i].category;
-           this.sendmessage[i].name=this.manList[i].name;
-           this.sendmessage[i].number=this.manList[i].number;
+           this.$delete(this.manList[i],"username")
         }
-        console.log(this.sendmessage);
+        console.log(this.manList);
         this.$axios({
           method:'post',
-          url:'/registerMaterialApply',
+          url:'/registerMaterialsApply',
           data:JSON.stringify(
-            this.sendmessage[0],
+            this.manList,
           ),
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
@@ -217,6 +212,7 @@
           .then(result=>{
             this.msg = result.data.message;
             console.log(this.msg)
+            this.manList=[]
           })
           .catch(err=>{
 
@@ -226,21 +222,21 @@
       saveman() {
         if(this.addFlag) {
           this.manList.push(this.man);
-          this.man={id:this.$store.state.user.idCard,username:this.$store.state.user.username,applyDate:this.date};
+          this.man={user:this.$store.state.user.idCard,username:this.$store.state.user.username,applyDate:this.date};
           this.dialogVisible = false;
         }
         else
         {
          for(let i=0;i<this.manList.length;i++)
          {
-           if(this.man.id===this.manList[i].id)
+           if(this.man.user===this.manList[i].user)
            {
              this.manList.splice(i,1);
              break;
            }
          }
          this.manList=[...this.manList,this.man];
-          this.man={id:this.$store.state.user.idCard,username:this.$store.state.user.username,applyDate:this.date};
+          this.man={user:this.$store.state.user.idCard,username:this.$store.state.user.username,applyDate:this.date};
           this.dialogVisible = false;
         }
       },
@@ -282,7 +278,7 @@
       async handleDel() {
         for(let i=0;i<this.manList.length;i++)
         {
-          if(this.delmanmodel.id===this.manList[i].id)
+          if(this.delmanmodel.user===this.manList[i].user)
           {
             this.manList.splice(i,1);
             break;
