@@ -73,6 +73,7 @@
                 name:this.tableData[k].name,
                 applyDate:this.tableData[k].applyDate,
                 userDate:this.tableData[k].userDate,
+                finished:1,
               }
             )
           }
@@ -104,9 +105,9 @@
               this.sendmessagesign.push(this.tableData[i]);
               this.sendmessage.push({
                 user:this.tableData[i].id,
-                name:this.tableData[i].name,
                 applyDate:this.tableData[i].applyDate,
                 userDate:this.tableData[i].userDate,
+                finished:1,
               })
             }
           }
@@ -145,8 +146,11 @@
             applyDate: row.applyDate,
             userDate: row.userDate,
             user: row.id,
-            username: row.username,
-          })
+            finished:1,
+          }),
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
+          },
         }).then(res=>{
           this.$message({
             message: res.data.message,
@@ -159,7 +163,7 @@
     created () {
       var aData = new Date();
       var applyDate = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
-      var userDate=aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + (aData.getDate()+1)+" 00:00:00-23:59:59";
+      var userDate=aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + (aData.getDate()+1);
         this.$axios({
           method: 'post',
           url: '/getFamilyInfo',

@@ -54,6 +54,7 @@
       </el-table-column>
     </el-table>
     <el-button type="primary" @click="submit()" style="margin-left:100px;width: 10%;background: #505458;border: none">提交</el-button>
+    <el-button type="primary" @click="getmateralList()" style="margin-left:100px;width: 10%;background: #505458;border: none">查看</el-button>
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -134,6 +135,30 @@
         <el-button type="primary" @click="dialog2Visible = false">取消</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog
+      title="已申请物资"
+      style="text-align:left !important"
+      :visible.sync="dialog3Visible"
+      :before-close="handleClose"
+    >
+      <el-table
+        :data="materalList"
+        border
+        style="width: 100%"
+        stripe
+        ref="multipleTable"
+        tooltip-effect="dark"
+      >
+        <el-table-column prop="user" label="身份证号" width="150px"></el-table-column>
+        <el-table-column prop="applyDate" label="申请日期" width="150px"></el-table-column>
+        <el-table-column prop="category" label="物资分类" width="150px"></el-table-column>
+        <el-table-column prop="name" label="物资姓名" width="150px"></el-table-column>
+        <el-table-column prop="number" label="物资数量" width="150px"></el-table-column>
+      </el-table>
+      <el-button type="primary" @click="dialog3Visible = false">取消</el-button>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -145,6 +170,7 @@
       return {
         dialogVisible: false,
         dialog2Visible: false,
+        dialog3Visible:false,
         activeIndex2: "1",
         total: 0,
         size: 5,
@@ -155,6 +181,7 @@
         materal:{
           finished:1,
         },
+        materalList:[],
         delmanmodel:{},
         man: {
         },
@@ -169,7 +196,6 @@
       var aData = new Date();
       this.man.applyDate = aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
       this.date=aData.getFullYear() + "-" + (aData.getMonth() + 1) + "-" + aData.getDate();
-      this.getmateralList()
     },
     watch:{
       //2.x版本的bug 以前用1.x发现没有 假如现在是第三页，只有一条数据了。将其删除，就没有第三页了。应该跳到第二页展示出5条数据。
@@ -241,28 +267,22 @@
         }
       },
       async getmateralList() {
+        this.dialog3Visible=true;
         this.$axios({
           method:'post',
           url:'/getMaterialsApplyInfo',
-          data: JSON.stringify(
-            this.$store.state.user.idCard,
-          ),
+          data: this.$store.state.user.idCard,
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',//设置请求头请求格式为JSON
           },
         }).then(res=> {
             console.log(res)
-            if (res.data.result.length !== 0) {
-              this.manList = res.data.result;
-              for(let item in this.manList)
-              {
-                item.id=item.user;
-                item.username=this.$store.state.user.username
-              }
+            if (res.data.length !== 0) {
+              this.materalList = res.data;
             }
             else
             {
-              this.manList=[];
+              this.materalList=[];
             }
           }
         ) .catch(err=>{
